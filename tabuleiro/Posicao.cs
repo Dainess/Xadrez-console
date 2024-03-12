@@ -1,4 +1,4 @@
-namespace Tabuleiro
+namespace AreaDeJogo
 {
     class Posicao
     {
