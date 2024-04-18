@@ -1,3 +1,5 @@
+using Xadrez;
+
 namespace AreaDeJogo
 {
     class Posicao

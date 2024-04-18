@@ -1,4 +1,3 @@
-D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.csproj.AssemblyReference.cache
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.GeneratedMSBuildEditorConfig.editorconfig
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.AssemblyInfoInputs.cache
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.AssemblyInfo.cs
@@ -13,3 +12,4 @@ D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.pdb
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.genruntimeconfig.cache
 D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\ref\12_ProjetoXadrez.dll
+D:\Backup2023\Progs\Courses\Udemy_Nelio_CSharp\12_ProjetoXadrez\obj\Debug\net7.0\12_ProjetoXadrez.sourcelink.json

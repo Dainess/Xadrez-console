@@ -1,3 +1,4 @@
+
 namespace AreaDeJogo
 {
     class Peca
@@ -18,6 +19,11 @@ namespace AreaDeJogo
         public override string ToString()
         {
             return PecaPosicao.ToString();
+        }
+
+        public void SomarMovimento()
+        {
+            Movimentos++;
         }
     }
 }

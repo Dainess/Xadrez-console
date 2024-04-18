@@ -9,13 +9,13 @@ namespace Aplicacao
         {
             try
             {
-                Tabuleiro T = new Tabuleiro(8, 8);
-                
-                T.ColocarPeca(new Torre(Cor.Preta, T), new Posicao(0,0));
-                T.ColocarPeca(new Torre(Cor.Preta, T), new Posicao(1,3));
-                T.ColocarPeca(new Rei(Cor.Preta, T), new Posicao(2,4));
-                T.ColocarPeca(new Torre(Cor.Preta, T), new Posicao(0,0));
-                Tela.ImprimirTabuleiro(T);
+                PartidaDeXadrez partida = new PartidaDeXadrez();
+                partida.IniciarTabuleiro();
+                                
+                while (!partida.Terminada)
+                {
+                    partida.LoopDePartida();
+                }
             }
             catch (TabuleiroException e)
             {
@@ -25,6 +25,12 @@ namespace Aplicacao
             {
                 Console.WriteLine("Deu ruim com " + e.Message);
             }
+        }
+
+        static void Test()
+        {
+            char one = (char)(65 + 32);
+            Console.WriteLine($"!{one}!");
         }
     }
 }
