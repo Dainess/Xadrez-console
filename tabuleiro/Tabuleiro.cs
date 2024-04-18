@@ -36,18 +36,17 @@ namespace AreaDeJogo
                 throw new TabuleiroException("Já existe uma peça nesse lugar!");
             }
             Espacos[pos.Linha, pos.Coluna] = p;
-            p.PecaPosicao = pos;
+            p.SetPosicao(pos);
         }
 
         public Peca RetirarPeca(Posicao posicao)
         {
-            Console.WriteLine(posicao);
             if (MandaPeca(posicao) == null)
                 return null;
             else
             {   
                 Peca aux = MandaPeca(posicao);
-                aux.PecaPosicao = null;
+                aux.SetPosicao(null);
                 Espacos[posicao.Linha, posicao.Coluna] = null;
                 return aux;
             }       
@@ -55,7 +54,7 @@ namespace AreaDeJogo
         
         public void ValidarPosicao(Posicao pos)
         {
-            if (pos.Linha < 0 || pos.Linha > this.Linhas || pos.Coluna < 0 || pos.Coluna > this.Colunas)
+            if (pos.Linha < 0 || pos.Linha >= this.Linhas  || pos.Coluna < 0 || pos.Coluna >= this.Colunas)
             {
                 throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
             }

@@ -47,5 +47,30 @@ namespace Aplicacao
                 Console.ForegroundColor = aux;
             }
         }
+
+        public static void ImprimirComFutura(Peca peca)
+        {
+            var movimento = peca.MovimentosPossiveis();
+
+            for (int coluna = 0; coluna < peca.T.Linhas; coluna++)
+            {
+                for (int linha = 0; linha < peca.T.Colunas; linha++)
+                {
+                    if (movimento[linha, coluna])
+                        peca.T.ColocarPeca(new Futura(peca.PecaCor, peca.T), new Posicao(linha, coluna));
+                }
+            }
+
+            ImprimirTabuleiro(peca.T);
+
+            for (int coluna = 0; coluna < peca.T.Linhas; coluna++)
+            {
+                for (int linha = 0; linha < peca.T.Colunas; linha++)
+                {
+                    if (movimento[linha, coluna])
+                        peca.T.RetirarPeca(new Posicao(linha, coluna));
+                }
+            }
+        } 
     }
 }

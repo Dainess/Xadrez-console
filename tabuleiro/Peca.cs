@@ -1,18 +1,17 @@
-
 namespace AreaDeJogo
 {
-    class Peca
+    abstract class Peca
     {
-        public Posicao PecaPosicao {get; set;}
+        public Posicao PecaPosicao {get; protected set;}
         public Cor PecaCor {get; protected set;}
         public int Movimentos {get; protected set;}
-        public Tabuleiro Tab {get; protected set;}
+        public Tabuleiro T {get; protected set;}
 
         public Peca (Cor cor, Tabuleiro tabuleiro)
         {
             PecaPosicao = null;
             PecaCor = cor;
-            Tab = tabuleiro;
+            T = tabuleiro;
             Movimentos = 0;
         }
 
@@ -25,5 +24,12 @@ namespace AreaDeJogo
         {
             Movimentos++;
         }
+
+        public void SetPosicao(Posicao posicao)
+        {
+            PecaPosicao = posicao;
+        }
+
+        public abstract bool[,] MovimentosPossiveis();
     }
 }
