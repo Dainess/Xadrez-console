@@ -1,6 +1,6 @@
 # Sistema de Jogo de Xadrez - Console C# 
 
-![Image](.github/csharp_color_text.webp)
+![Image](.github/csharpLogo.png)
 
 ## Introdução
 Execução de um jogo de xadrez para demonstrar a execução de um projeto completo em C#
