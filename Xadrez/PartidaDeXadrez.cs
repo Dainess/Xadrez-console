@@ -50,6 +50,9 @@ class PartidaDeXadrez
         Console.Write("Origem: ");
         Posicao origem = Tela.LerProximaJogada().ToPosition();
 
+        Console.Clear();
+        Tela.ImprimirTabuleiro(T, T.MandaPeca(origem).MovimentosPossiveis());
+
         Console.Write("Destino: ");
         Posicao destino = Tela.LerProximaJogada().ToPosition();
 

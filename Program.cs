@@ -9,7 +9,8 @@ namespace Aplicacao
         {
             try
             {
-                Test();
+                //Test();
+                Game();
             }
             catch (TabuleiroException e)
             {
@@ -25,9 +26,16 @@ namespace Aplicacao
         {
             Tabuleiro T = new Tabuleiro(8, 8);
             Rei reizinho = new Rei(Cor.Branca, T);
-            T.ColocarPeca(reizinho, new Posicao(3, 1));
+            Torre baradDur = new Torre(Cor.Preta, T);
+            Rei prince = new Rei(Cor.Branca, T);
+            Console.WriteLine();
+            T.ColocarPeca(reizinho, new Posicao(5,5));
+            T.ColocarPeca(baradDur, new Posicao(2,5));
+            T.ColocarPeca(prince, new Posicao(3,4));
+            T.ColocarPeca(new Rei(Cor.Branca, T), new Posicao(6,4));
 
-            Tela.ImprimirComFutura(reizinho);
+            //Tela.ImprimirComFutura(baradDur);
+            //Tela.ImprimirComFutura(prince);
 
             Tela.ImprimirTabuleiro(T);
         }
@@ -46,17 +54,5 @@ namespace Aplicacao
 }
 
 /*
-
-int count = 0;
-            foreach (var thing in reizinho.MovimentosPossiveis())
-            {
-                Console.Write($"{thing}, ");
-                count++;
-                if (count >= 8)
-                {
-                    count = 0;
-                    Console.WriteLine();
-                }
-            }
 
 */

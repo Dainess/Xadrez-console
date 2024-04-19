@@ -30,6 +30,26 @@ namespace AreaDeJogo
             PecaPosicao = posicao;
         }
 
+        public void SetCor(Cor cor)
+        {
+            PecaCor = cor;
+        }
+
         public abstract bool[,] MovimentosPossiveis();
+
+        public void MatrizDePossiveis()
+        {
+            int count = 0;
+            foreach (var thing in this.MovimentosPossiveis())
+            {
+                Console.Write($"{thing}, ");
+                count++;
+                if (count >= 8)
+                {
+                    count = 0;
+                    Console.WriteLine();
+                }
+            }
+        }
     }
 }

@@ -22,10 +22,13 @@ namespace Xadrez
             {
                 try
                 {
-                    T.ValidarPosicao(proxima);
                     if (T.ExistePeca(proxima))
                     {
-                        T.RetirarPeca(proxima);
+                        if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                        {
+                            retorno[proxima.Linha, proxima.Coluna] = true;
+                        }
+                        continue;
                     }
                     retorno[proxima.Linha, proxima.Coluna] = true;
                 }
@@ -34,7 +37,6 @@ namespace Xadrez
 
                 }
             }
-
             return retorno;
         }
 
