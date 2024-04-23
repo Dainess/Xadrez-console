@@ -2,8 +2,8 @@ namespace AreaDeJogo
 {
     enum Cor
     {
-        Branca,
-        Preta,
+        Branca = -1,
+        Preta = 1,
         Amarela,
         Azul,
         Vermelha,

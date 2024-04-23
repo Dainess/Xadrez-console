@@ -22,7 +22,26 @@ namespace Aplicacao
             }
         }
 
+        static void Game()
+        {
+            PartidaDeXadrez partida = new PartidaDeXadrez();
+            partida.IniciarTabuleiro();
+                            
+            partida.LoopDePartida();
+        }
+
         static void Test()
+        {
+            Posicao um = new Posicao(2, 3);
+            Posicao dois = new Posicao(2, 2);
+            Posicao tres = new Posicao(2, 3);
+
+            Console.WriteLine($"Um e dois: {um} e {dois}: {um.Equals(dois)}");
+            Console.WriteLine($"Um e dois: {um} e {tres}: {um.Equals(tres)}");
+            Console.WriteLine($"Um e dois: {tres} e {dois}: {tres.Equals(dois)}");
+        }
+
+        static void Test1()
         {
             Tabuleiro T = new Tabuleiro(8, 8);
             Rei reizinho = new Rei(Cor.Branca, T);
@@ -38,17 +57,6 @@ namespace Aplicacao
             //Tela.ImprimirComFutura(prince);
 
             Tela.ImprimirTabuleiro(T);
-        }
-
-        static void Game()
-        {
-            PartidaDeXadrez partida = new PartidaDeXadrez();
-            partida.IniciarTabuleiro();
-                            
-            while (!partida.Terminada)
-            {
-                partida.LoopDePartida();
-            }
         }
     }
 }

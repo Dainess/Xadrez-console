@@ -32,6 +32,7 @@ namespace Aplicacao
                     if (movimentos[i, j])
                     {
                         Console.BackgroundColor = fundoPossiveis;
+                        
                     }
                     ImprimirPeca(T.MandaPeca(i, j));
                     Console.BackgroundColor = fundoOriginal;
