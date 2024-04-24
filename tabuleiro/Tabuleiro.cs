@@ -5,6 +5,8 @@ namespace AreaDeJogo
         public int Linhas {get; set;}
         public int Colunas {get; set;}
         private Peca[,] Espacos {get; set;}
+        public HashSet<Peca> PecasCapturadas { get; private set; } = new HashSet<Peca>();
+        public HashSet<Peca> PecasAtivas { get; private set;} = new HashSet<Peca>();
 
         public Tabuleiro (int linhas, int colunas)
         {
@@ -58,6 +60,21 @@ namespace AreaDeJogo
             {
                 throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
             }
+        }
+
+        /*** HASH SET ***/
+
+        public HashSet<Peca> Capturadas(Cor cor)
+        {
+            return PecasCapturadas.Where(peca => peca.PecaCor == cor).ToHashSet();
+            /*HashSet<Peca> aux = new HashSet<Peca>();
+            var outroAux = T.PecasCapturadas.Where(peca => peca.PecaCor == cor);
+            aux = outroAux.ToHashSet();
+            return aux;*/
+        }
+        public HashSet<Peca> PecasEmJogo(Cor cor)
+        {
+            return PecasAtivas.Where(peca => peca.PecaCor == cor).ToHashSet();
         }
     }
 }

@@ -23,31 +23,46 @@ class PartidaDeXadrez
         Peca peca = T.RetirarPeca(origem);
         peca.SomarMovimento();
         Peca pecaCapturada = T.RetirarPeca(destino);
+        if (pecaCapturada != null)
+        {
+            T.PecasAtivas.Remove(pecaCapturada);
+            T.PecasCapturadas.Add(pecaCapturada);
+        }
         T.ColocarPeca(peca, destino);
     }
 
     public void realizaJogada(Posicao origem, Posicao destino)
     {
         ExecutaMovimento(origem, destino);
-        JogadorAtual = (Cor)((int)JogadorAtual * (-1));
+        JogadorAtual = (Cor)(1 - (int)JogadorAtual);
         Turno++;
+    }
+
+    public void ColocarNovaPeca(Peca peca, char coluna, int linha)
+    {
+        T.ColocarPeca(peca, new PosicaoXadrez(coluna, linha).ToPosition());
+        T.PecasAtivas.Add(peca);
     }
 
     public void IniciarTabuleiro()
     {
-        T.ColocarPeca(new Torre(Cor.Branca, T), new PosicaoXadrez('C', 1).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Branca, T), new PosicaoXadrez('C', 2).ToPosition());
-        T.ColocarPeca(new Rei(Cor.Branca, T), new PosicaoXadrez('D', 1).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Branca, T), new PosicaoXadrez('D', 2).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Branca, T), new PosicaoXadrez('E', 1).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Branca, T), new PosicaoXadrez('E', 2).ToPosition());
+        var bots = new[] {
+            new {peca = (Peca)(new Torre(Cor.Branca, T)), coluna = 'C', linha = 1},
+        };
 
-        T.ColocarPeca(new Torre(Cor.Preta, T), new PosicaoXadrez('C', 7).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Preta, T), new PosicaoXadrez('C', 8).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Preta, T), new PosicaoXadrez('D', 7).ToPosition());
-        T.ColocarPeca(new Rei(Cor.Preta, T), new PosicaoXadrez('D', 8).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Preta, T), new PosicaoXadrez('E',7).ToPosition());
-        T.ColocarPeca(new Torre(Cor.Preta, T), new PosicaoXadrez('E',8).ToPosition());
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'C', 1);
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'C', 2);
+        ColocarNovaPeca(new Rei(Cor.Branca, T), 'D', 1);
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'D', 2);
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'E', 1);
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'E', 2);
+
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'C', 7);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'C', 8);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'D', 7);
+        ColocarNovaPeca(new Rei(Cor.Preta, T), 'D', 8);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 7);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 8);
     }
 
     public void ValidarPosicaoDeOrigem(Peca proximaPeca)
@@ -82,8 +97,11 @@ class PartidaDeXadrez
                 Console.Clear();
                 Tela.ImprimirTabuleiro(T);
                 Console.WriteLine();
+                Tela.Capturadas(T, true);
+                Console.WriteLine();
                 Console.WriteLine($"Turno: {Turno}");
                 Console.WriteLine($"Aguardando a vez do jogador da cor: {JogadorAtual}");
+                Console.WriteLine();
 
                 Console.Write("Origem: ");
                 Posicao origem = Tela.LerProximaJogada().ToPosition();
@@ -94,10 +112,11 @@ class PartidaDeXadrez
 
                 Console.Clear();
                 Tela.ImprimirTabuleiro(T, proximaPeca.MovimentosPossiveis());
+                Tela.Capturadas(T, true);
 
                 while (true)
                 {
-                    Console.Write("Destino: ");
+                    Console.Write("\nDestino: ");
                     Posicao destino = Tela.LerProximaJogada().ToPosition();
                     if (proximaPeca.DestinosLegais.Contains(destino))
                     {

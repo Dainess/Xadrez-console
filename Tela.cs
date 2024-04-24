@@ -17,6 +17,7 @@ namespace Aplicacao
                 Console.WriteLine();
             }
             Console.WriteLine("  A B C D E F G H");
+            //Capturadas(T);
         }
 
         public static void ImprimirTabuleiro(Tabuleiro T, bool[,] movimentos)
@@ -39,7 +40,7 @@ namespace Aplicacao
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine("  A B C D E F G H");
+            Console.WriteLine("  A B C D E F G H\n");
         }
 
         public static PosicaoXadrez LerProximaJogada()
@@ -59,21 +60,65 @@ namespace Aplicacao
             }
             else
             {
-                if (peca.PecaCor == Cor.Branca)
-                    Console.Write(peca);
-                else
-                {
-                    ConsoleColor aux = Console.ForegroundColor;
-                    if (peca.PecaCor == Cor.Preta)
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    else if (peca.PecaCor == Cor.Vermelha)
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(peca);
-                    Console.ForegroundColor = aux;
-                }
-                Console.Write(" ");
+                DecideCor(peca);
             }
         }
+
+        private static void DecideCor(Peca peca)
+        {
+            if (peca.PecaCor == Cor.Branca)
+                Console.Write(peca);
+            else
+            {
+                ConsoleColor aux = Console.ForegroundColor;
+                if (peca.PecaCor == Cor.Preta)
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                else if (peca.PecaCor == Cor.Vermelha)
+                    Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(peca);
+                Console.ForegroundColor = aux;
+            }
+            Console.Write(" ");
+        }
+
+        private static void Capturadas(Tabuleiro T)
+        {
+            Console.WriteLine("\nPeças capturadas:");
+            foreach (var thing in T.PecasCapturadas)
+            {
+                DecideCor(thing);
+            }
+        }
+
+        private static void ImprimirConjunto(HashSet<Peca> conjunto)
+        {
+            Console.Write("[ ");
+            foreach(var thing in conjunto)
+            {
+                Console.Write($"{thing} ");
+            }
+            Console.WriteLine("]");
+        }
+
+
+        public static void Capturadas(Tabuleiro T, bool completo)
+        {
+            if (!completo)
+                Capturadas(T);
+            else
+            {
+                Console.WriteLine("Peças capturadas:");
+                Console.Write("Brancas:");
+                ImprimirConjunto(T.Capturadas(Cor.Branca));
+                Console.Write("Pretas: ");
+                ConsoleColor aux = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                ImprimirConjunto(T.Capturadas(Cor.Preta));
+                Console.ForegroundColor = aux;
+            }
+        }
+
+        //*************************************************************************************
 
         public static void ImprimirComFutura(Peca peca)
         {
