@@ -23,7 +23,7 @@ namespace Xadrez
                 Posicao proxima = new(PecaPosicao.Linha, i);
                 if (T.ExistePeca(proxima))
                 {
-                    if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
                     {
                         retorno[proxima.Linha, proxima.Coluna] = true;
                     }
@@ -37,7 +37,7 @@ namespace Xadrez
                 Posicao proxima = new(PecaPosicao.Linha, i);
                 if (T.ExistePeca(proxima))
                 {
-                    if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
                     {
                         retorno[proxima.Linha, proxima.Coluna] = true;
                     }
@@ -51,7 +51,7 @@ namespace Xadrez
                 Posicao proxima = new(i, PecaPosicao.Coluna);
                 if (T.ExistePeca(proxima))
                 {
-                    if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
                     {
                         retorno[proxima.Linha, proxima.Coluna] = true;
                     }
@@ -66,7 +66,7 @@ namespace Xadrez
                 if (T.ExistePeca(proxima))
                 {
                     
-                    if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
                     {
                         retorno[proxima.Linha, proxima.Coluna] = true;
                     }

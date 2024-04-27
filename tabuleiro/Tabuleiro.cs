@@ -15,12 +15,12 @@ namespace AreaDeJogo
             Espacos = new Peca[linhas, colunas];
         }
 
-        public Peca MandaPeca(int linha, int coluna)
+        public Peca QualAPeca(int linha, int coluna)
         {
             return Espacos[linha, coluna];
         }
 
-        public Peca MandaPeca(Posicao pos)
+        public Peca QualAPeca(Posicao pos)
         {
             return Espacos[pos.Linha, pos.Coluna];
         }
@@ -28,13 +28,14 @@ namespace AreaDeJogo
         public bool ExistePeca(Posicao pos)
         {
             ValidarPosicao(pos);
-            return MandaPeca(pos) != null;
+            return QualAPeca(pos) != null;
         }
 
         public void ColocarPeca(Peca p, Posicao pos)
         {
             if (ExistePeca(pos))
             {
+                Console.WriteLine($"{p}, {p.PecaPosicao}, {p.PecaCor} , {pos}");
                 throw new TabuleiroException("Já existe uma peça nesse lugar!");
             }
             Espacos[pos.Linha, pos.Coluna] = p;
@@ -43,11 +44,11 @@ namespace AreaDeJogo
 
         public Peca RetirarPeca(Posicao posicao)
         {
-            if (MandaPeca(posicao) == null)
+            if (QualAPeca(posicao) == null)
                 return null;
             else
             {   
-                Peca aux = MandaPeca(posicao);
+                Peca aux = QualAPeca(posicao);
                 aux.SetPosicao(null);
                 Espacos[posicao.Linha, posicao.Coluna] = null;
                 return aux;
@@ -60,6 +61,17 @@ namespace AreaDeJogo
             {
                 throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
             }
+        }
+
+        public void AtualizaMovimentosPossiveis()
+        {
+            foreach (var peca in PecasAtivas)
+            {
+                if (peca.PecaPosicao != null)
+                    peca.ExisteMovimentoPossivel();
+                else 
+                    peca.DestinosLegais.Clear();
+            }   
         }
 
         /*** HASH SET ***/

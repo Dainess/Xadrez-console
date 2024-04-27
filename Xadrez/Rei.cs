@@ -24,7 +24,7 @@ namespace Xadrez
                 {
                     if (T.ExistePeca(proxima))
                     {
-                        if (T.MandaPeca(proxima).PecaCor != PecaCor)
+                        if (T.QualAPeca(proxima).PecaCor != PecaCor)
                         {
                             retorno[proxima.Linha, proxima.Coluna] = true;
                         }
@@ -56,7 +56,7 @@ namespace Xadrez
 
         private bool PodeMover(Posicao posicao)
         {
-            Peca p = T.MandaPeca(posicao);
+            Peca p = T.QualAPeca(posicao);
             return p == null || p.PecaCor != PecaCor;
         }
     }

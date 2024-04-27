@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using Aplicacao;
 using AreaDeJogo;
 
@@ -9,6 +8,7 @@ class PartidaDeXadrez
     public int Turno { get; private set; }
     public Cor JogadorAtual { get; private set; }
     public bool Terminada { get; private set; }
+    public bool Xeque {get; private set; }
 
     public PartidaDeXadrez()
     {
@@ -16,26 +16,102 @@ class PartidaDeXadrez
         Turno = 1;
         JogadorAtual = Cor.Branca;
         Terminada = false;
+        Xeque = false;
     }
 
-    public void ExecutaMovimento(Posicao origem, Posicao destino)
+    public Peca ExecutaMovimento(Posicao origem, Posicao destino)
     {
         Peca peca = T.RetirarPeca(origem);
-        peca.SomarMovimento();
         Peca pecaCapturada = T.RetirarPeca(destino);
+        peca.SomarMovimento();
+        T.ColocarPeca(peca, destino);
+        T.AtualizaMovimentosPossiveis();
+        return pecaCapturada;
+    }
+    
+    public void DesfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
+    {
+        Peca pecaOriginal = T.RetirarPeca(destino);
+        pecaOriginal.SubtraiMovimento();
+        if (pecaCapturada != null)
+            T.ColocarPeca(pecaCapturada, destino);
+        T.ColocarPeca(pecaOriginal, origem);
+        T.AtualizaMovimentosPossiveis();
+    }
+
+    private Cor Adversaria(Cor cor)
+    {
+        return (Cor)(1 - (int)cor);
+    }
+
+    private Peca Rei(Cor cor)
+    {
+        return T.PecasEmJogo(cor).First(peca => peca is Rei);
+    }
+
+    private bool EmXeque(Cor cor)
+    {
+        Rei nossoRei = (Rei)Rei(cor);
+        if (nossoRei == null)
+            throw new TabuleiroException($"Não há um rei da cor {JogadorAtual} no tabuleiro");
+        foreach (var peca in T.PecasEmJogo(Adversaria(cor)))
+        {
+            if (peca.DestinosLegais.Contains(nossoRei.PecaPosicao))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool SalvaOXeque(Cor cor)
+    {
+        Rei nossoRei = (Rei)Rei(cor);
+        if (nossoRei == null)
+            throw new TabuleiroException($"Não há um rei da cor {JogadorAtual} no tabuleiro");
+
+        foreach(var peca in T.PecasEmJogo(cor))
+        {
+            //T.PecasEmJogo(cor).AsParallel().ForAll(Console.WriteLine);
+            var possiveis = new Posicao[peca.DestinosLegais.Count];
+            peca.DestinosLegais.CopyTo(possiveis);
+            foreach (var posicao in possiveis)
+            {
+                Posicao original = peca.PecaPosicao;
+                Peca pecaSimulada = ExecutaMovimento(original, posicao);
+                if (TestaJogada(original, posicao, pecaSimulada))
+                {
+                    DesfazMovimento(original, posicao, pecaSimulada);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void RealizaJogada(Peca pecaCapturada)
+    {
         if (pecaCapturada != null)
         {
             T.PecasAtivas.Remove(pecaCapturada);
             T.PecasCapturadas.Add(pecaCapturada);
         }
-        T.ColocarPeca(peca, destino);
+        JogadorAtual = Adversaria(JogadorAtual);
+        if (EmXeque(JogadorAtual))
+            Xeque = true;
+        else
+            Xeque = false;
+        Turno++;
     }
 
-    public void realizaJogada(Posicao origem, Posicao destino)
+    public bool TestaJogada(Posicao origem, Posicao destino, Peca pecaCapturada)
     {
-        ExecutaMovimento(origem, destino);
-        JogadorAtual = (Cor)(1 - (int)JogadorAtual);
-        Turno++;
+        if (EmXeque(JogadorAtual))
+        {
+            DesfazMovimento(origem, destino, pecaCapturada);
+            return false;
+        }
+        return true;
     }
 
     public void ColocarNovaPeca(Peca peca, char coluna, int linha)
@@ -63,6 +139,8 @@ class PartidaDeXadrez
         ColocarNovaPeca(new Rei(Cor.Preta, T), 'D', 8);
         ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 7);
         ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 8);
+
+        T.AtualizaMovimentosPossiveis();
     }
 
     public void ValidarPosicaoDeOrigem(Peca proximaPeca)
@@ -75,7 +153,7 @@ class PartidaDeXadrez
         {
             throw new TabuleiroException("Você escolheu a peça da cor errada. Agora é o jogador: " + JogadorAtual);
         }
-        if (proximaPeca.ExisteMovimentoPossivel() == false)
+        if (proximaPeca.DestinosLegais.Count == 0)
         {
             throw new TabuleiroException("Essa peça não tem movimentos legais disponíveis. Escolha novamente.");
         }
@@ -83,10 +161,9 @@ class PartidaDeXadrez
 
     public void ValidarPosicaoDeDestino(Peca proximaPeca, Posicao destino)
     {
-        if (proximaPeca.PodeMoverPara(destino) == false)
+        if (proximaPeca.PecaPodeIrPara(destino) == false)
             Console.WriteLine("O destino escolhido não é um destino legal. Tente novamente.\n");
     }
-    
 
     public void LoopDePartida()
     {
@@ -102,11 +179,21 @@ class PartidaDeXadrez
                 Console.WriteLine($"Turno: {Turno}");
                 Console.WriteLine($"Aguardando a vez do jogador da cor: {JogadorAtual}");
                 Console.WriteLine();
+                if (Xeque)
+                {
+                    Console.WriteLine("EM XEQUE!");
+                    if (SalvaOXeque(JogadorAtual) == false)
+                    {
+                        Terminada = true;
+                        throw new TabuleiroException("Acabou essa marmelada");
+                    }
+                }
+                    
 
                 Console.Write("Origem: ");
                 Posicao origem = Tela.LerProximaJogada().ToPosition();
 
-                Peca proximaPeca = T.MandaPeca(origem);
+                Peca proximaPeca = T.QualAPeca(origem);
 
                 ValidarPosicaoDeOrigem(proximaPeca);
 
@@ -114,16 +201,29 @@ class PartidaDeXadrez
                 Tela.ImprimirTabuleiro(T, proximaPeca.MovimentosPossiveis());
                 Tela.Capturadas(T, true);
 
+                //T.PecasEmJogo(cor).AsParallel().ForAll(Console.WriteLine);
+                
                 while (true)
                 {
-                    Console.Write("\nDestino: ");
+                    Console.Write("\nPara retornar, digite 'Origem'.\nDestino: ");
                     Posicao destino = Tela.LerProximaJogada().ToPosition();
-                    if (proximaPeca.DestinosLegais.Contains(destino))
+                    if (proximaPeca.DestinosLegais.Contains(destino) == false)
                     {
-                        realizaJogada(origem, destino);
-                        break;
+                        Console.WriteLine("O destino escolhido não é um destino legal. Tente novamente.\n");
                     }
-                    Console.WriteLine("O destino escolhido não é um destino legal. Tente novamente.\n");
+                    else
+                    {   
+                        Peca pecaCapturada = ExecutaMovimento(origem, destino);
+                        if (TestaJogada(origem, destino, pecaCapturada) == false)
+                        {
+                            Console.WriteLine("Este movimento te deixa em xeque. Escolha outro.\n");
+                        }
+                        else
+                        {
+                            RealizaJogada(pecaCapturada);
+                            break;
+                        }    
+                    }
                 }
             }
             catch (TabuleiroException e)
@@ -132,6 +232,7 @@ class PartidaDeXadrez
                 Console.ReadLine();
             }
         }
+        Console.WriteLine($"Vencedor: {Adversaria(JogadorAtual)}");
     }
 }
 

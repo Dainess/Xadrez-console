@@ -12,7 +12,7 @@ namespace Aplicacao
                 Console.Write($"{8 - i} ");
                 for (int j = 0; j < T.Colunas; j++)
                 {
-                    ImprimirPeca(T.MandaPeca(i, j));
+                    ImprimirPeca(T.QualAPeca(i, j));
                 }
                 Console.WriteLine();
             }
@@ -35,7 +35,7 @@ namespace Aplicacao
                         Console.BackgroundColor = fundoPossiveis;
                         
                     }
-                    ImprimirPeca(T.MandaPeca(i, j));
+                    ImprimirPeca(T.QualAPeca(i, j));
                     Console.BackgroundColor = fundoOriginal;
                 }
                 Console.WriteLine();
@@ -48,6 +48,8 @@ namespace Aplicacao
             string leitura = Console.ReadLine().ToUpper();
             if (leitura[0] == 'Q' || leitura[0] == 'q')
                 Environment.Exit(0);
+            else if (leitura == "ORIGEM")
+                throw new TabuleiroException("Retornando para escolha das peças.");
             int linha = int.Parse(leitura[1] + "");
             return new PosicaoXadrez(leitura[0],linha);
         }
@@ -130,13 +132,13 @@ namespace Aplicacao
                 for (int linha = 0; linha < peca.T.Colunas; linha++)
                 {
                     if (movimento[linha, coluna])
-                        if (peca.T.MandaPeca(linha, coluna) == null)
+                        if (peca.T.QualAPeca(linha, coluna) == null)
                         {
                             peca.T.ColocarPeca(new Futura(peca.PecaCor, peca.T), new Posicao(linha, coluna));
                         }
                         else
                         {
-                            peca.T.MandaPeca(linha, coluna).SetCor(Cor.Vermelha);
+                            peca.T.QualAPeca(linha, coluna).SetCor(Cor.Vermelha);
                         }
                 }
             }
@@ -149,16 +151,16 @@ namespace Aplicacao
                 {
                     if (movimento[linha, coluna])
                     {
-                        if (peca.T.MandaPeca(linha, coluna) is Futura)
+                        if (peca.T.QualAPeca(linha, coluna) is Futura)
                         {
                             peca.T.RetirarPeca(new Posicao(linha, coluna));
                         }
                         else 
                         {
                             if (peca.PecaCor == Cor.Branca)
-                                peca.T.MandaPeca(linha, coluna).SetCor(Cor.Preta);
+                                peca.T.QualAPeca(linha, coluna).SetCor(Cor.Preta);
                             else if (peca.PecaCor == Cor.Preta)
-                                peca.T.MandaPeca(linha, coluna).SetCor(Cor.Branca);
+                                peca.T.QualAPeca(linha, coluna).SetCor(Cor.Branca);
                         }
                     } 
                 }

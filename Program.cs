@@ -18,7 +18,7 @@ namespace Aplicacao
             }
             catch (Exception e)
             {
-                Console.WriteLine("Deu ruim com " + e.Message);
+                Console.WriteLine("Deu ruim com " + e.Message + e.StackTrace);
             }
         }
 

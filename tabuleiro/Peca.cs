@@ -6,7 +6,7 @@ namespace AreaDeJogo
         public Cor PecaCor {get; protected set;}
         public int Movimentos {get; protected set;}
         public Tabuleiro T {get; protected set;}
-        public List<Posicao>? DestinosLegais {get; protected set;} = new List<Posicao>();
+        public List<Posicao> DestinosLegais {get; protected set;} = new List<Posicao>();
 
         public Peca (Cor cor, Tabuleiro tabuleiro)
         {
@@ -24,6 +24,11 @@ namespace AreaDeJogo
         public void SomarMovimento()
         {
             Movimentos++;
+        }
+
+        public void SubtraiMovimento()
+        {
+            Movimentos--;
         }
 
         public void SetPosicao(Posicao posicao)
@@ -47,7 +52,8 @@ namespace AreaDeJogo
                 for (int j = 0; j < possiveis.GetLength(1); j++)
                 {
                     if (possiveis[i, j] == true)
-                        DestinosLegais.Add(new Posicao(i, j));
+                    {
+                        DestinosLegais.Add(new Posicao(i, j));}
                 }
             }
             if (DestinosLegais.Count == 0)
@@ -71,7 +77,7 @@ namespace AreaDeJogo
             }
         }
 
-        public bool PodeMoverPara(Posicao posicao)
+        public bool PecaPodeIrPara(Posicao posicao)
         {
             return MovimentosPossiveis()[posicao.Linha, posicao.Coluna];
         }
