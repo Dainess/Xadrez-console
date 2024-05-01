@@ -54,6 +54,8 @@ class PartidaDeXadrez
         Rei nossoRei = (Rei)Rei(cor);
         if (nossoRei == null)
             throw new TabuleiroException($"Não há um rei da cor {JogadorAtual} no tabuleiro");
+        else if (nossoRei.PecaPosicao == null)
+            throw new TabuleiroException($"Por algum acaso o rei não tem uma posição no tabuleiro");
         foreach (var peca in T.PecasEmJogo(Adversaria(cor)))
         {
             if (peca.DestinosLegais.Contains(nossoRei.PecaPosicao))
@@ -69,12 +71,14 @@ class PartidaDeXadrez
         Rei nossoRei = (Rei)Rei(cor);
         if (nossoRei == null)
             throw new TabuleiroException($"Não há um rei da cor {JogadorAtual} no tabuleiro");
-
         foreach(var peca in T.PecasEmJogo(cor))
         {
+            if (peca.PecaPosicao == null)
+                throw new TabuleiroException($"Por algum acaso essa peça não tem uma posição no tabuleiro");
             //T.PecasEmJogo(cor).AsParallel().ForAll(Console.WriteLine);
             var possiveis = new Posicao[peca.DestinosLegais.Count];
             peca.DestinosLegais.CopyTo(possiveis);
+
             foreach (var posicao in possiveis)
             {
                 Posicao original = peca.PecaPosicao;
