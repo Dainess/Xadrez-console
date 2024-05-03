@@ -33,9 +33,10 @@ namespace Aplicacao
         static void Test()
         {
             Tabuleiro T = new Tabuleiro(8, 8);
-            Cavalo scadufax = new Cavalo(Cor.Branca, T);
-            T.ColocarPeca(scadufax, new Posicao(3, 3));
-            scadufax.MostraPosicoesPossiveis();
+            Peao scadufax = new Peao(Cor.Branca, T);
+            T.ColocarPeca(scadufax, new Posicao(3, 4));
+            
+            Tela.ImprimirTabuleiro(T, scadufax.MovimentosPossiveis());
         }
 
         static void Test1()

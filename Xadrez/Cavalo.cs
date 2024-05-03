@@ -4,21 +4,32 @@ namespace Xadrez
 {
     class Cavalo : Peca
     {
-        public Cavalo(Cor cor, Tabuleiro tab) : base(cor, tab)
+        public Cavalo(Cor cor, Tabuleiro T) : base(cor, T)
         {
 
         }
 
         public override string ToString()
         {
-            return "B";
+            return "C";
         }
 
         public override bool[,] MovimentosPossiveis()
         {
             bool[,] retorno = new bool[T.Linhas,T.Colunas];
 
-
+            foreach (var thing in PosicoesPossiveis())
+            {
+                if (T.ExistePeca(thing))
+                {
+                    if (T.QualAPeca(thing).PecaCor != PecaCor)
+                    {
+                        retorno[thing.Linha, thing.Coluna] = true;
+                    }
+                    continue;
+                }
+                retorno[thing.Linha, thing.Coluna] = true;
+            }
 
             return retorno;
         }

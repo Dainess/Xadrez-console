@@ -60,7 +60,6 @@ namespace AreaDeJogo
         {
             if (pos.Linha < 0 || pos.Linha >= this.Linhas  || pos.Coluna < 0 || pos.Coluna >= this.Colunas)
             {
-                //throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
                 return false;
             }
             return true;

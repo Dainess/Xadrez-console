@@ -4,7 +4,7 @@ namespace Xadrez
 {
     class Torre : Peca
     {
-        public Torre(Cor cor, Tabuleiro tab) : base(cor, tab)
+        public Torre(Cor cor, Tabuleiro T) : base(cor, T)
         {
 
         }
