@@ -18,64 +18,60 @@ namespace Xadrez
         {
             bool[,] retorno = new bool[T.Linhas,T.Colunas];
 
+            if (PecaPosicao == null)
+                throw new TabuleiroException("A peça não pode criar matriz de movimentos pois sua posição é nula");
+
             for (int i = PecaPosicao.Coluna - 1; i >= 0; i--)
             {
                 Posicao proxima = new(PecaPosicao.Linha, i);
-                if (T.ExistePeca(proxima))
+                if (UmaDirecaoDoMovimentoPossivel(retorno, proxima))
                 {
-                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
-                    {
-                        retorno[proxima.Linha, proxima.Coluna] = true;
-                    }
-                    break;     
+                    break;
                 }
-                retorno[proxima.Linha, proxima.Coluna] = true;
             }
 
             for (int i = PecaPosicao.Coluna + 1; i < T.Colunas; i++)
             {
                 Posicao proxima = new(PecaPosicao.Linha, i);
-                if (T.ExistePeca(proxima))
+                if (UmaDirecaoDoMovimentoPossivel(retorno, proxima))
                 {
-                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
-                    {
-                        retorno[proxima.Linha, proxima.Coluna] = true;
-                    }
-                    break;     
+                    break;
                 }
-                retorno[proxima.Linha, proxima.Coluna] = true;
             }
 
             for (int i = PecaPosicao.Linha - 1; i >= 0; i--)
             {
                 Posicao proxima = new(i, PecaPosicao.Coluna);
-                if (T.ExistePeca(proxima))
+                if (UmaDirecaoDoMovimentoPossivel(retorno, proxima))
                 {
-                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
-                    {
-                        retorno[proxima.Linha, proxima.Coluna] = true;
-                    }
-                    break;     
+                    break;
                 }
-                retorno[proxima.Linha, proxima.Coluna] = true;
             }
 
             for (int i = PecaPosicao.Linha + 1; i < T.Linhas; i++)
             {
                 Posicao proxima = new(i, PecaPosicao.Coluna);
-                if (T.ExistePeca(proxima))
+                if (UmaDirecaoDoMovimentoPossivel(retorno, proxima))
                 {
-                    
-                    if (T.QualAPeca(proxima).PecaCor != PecaCor)
-                    {
-                        retorno[proxima.Linha, proxima.Coluna] = true;
-                    }
-                    break;     
+                    break;
                 }
-                retorno[proxima.Linha, proxima.Coluna] = true;
             }
 
             return retorno;
+        }
+
+        private bool UmaDirecaoDoMovimentoPossivel(bool[,] retorno, Posicao proxima)
+        {
+            if (T.ExistePeca(proxima))
+            {
+                if (T.QualAPeca(proxima).PecaCor != PecaCor)
+                {
+                    retorno[proxima.Linha, proxima.Coluna] = true;
+                }     
+                return true;
+            }
+            retorno[proxima.Linha, proxima.Coluna] = true;
+            return false;
         }
     }
 }

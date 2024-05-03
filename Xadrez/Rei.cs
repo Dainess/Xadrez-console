@@ -32,7 +32,7 @@ namespace Xadrez
                     }
                     retorno[proxima.Linha, proxima.Coluna] = true;
                 }
-                catch (TabuleiroException e)
+                catch (TabuleiroException)
                 {
 
                 }
@@ -42,6 +42,8 @@ namespace Xadrez
 
         private Posicao[] PosicoesPossiveis()
         {
+            if (PecaPosicao == null)
+                throw new TabuleiroException("O Rei não pode criar matriz de movimentos pois sua posição é nula");;
             return new Posicao[] {
                 new Posicao(PecaPosicao.Linha, PecaPosicao.Coluna - 1), //oeste
                 new Posicao(PecaPosicao.Linha - 1, PecaPosicao.Coluna - 1), //noroeste

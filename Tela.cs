@@ -45,7 +45,7 @@ namespace Aplicacao
 
         public static PosicaoXadrez LerProximaJogada()
         {
-            string leitura = Console.ReadLine().ToUpper();
+            string leitura = (Console.ReadLine() ?? String.Empty).ToUpper();
             if (leitura[0] == 'Q' || leitura[0] == 'q')
                 Environment.Exit(0);
             else if (leitura == "ORIGEM")

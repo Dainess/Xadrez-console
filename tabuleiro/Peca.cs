@@ -18,6 +18,8 @@ namespace AreaDeJogo
 
         public override string ToString()
         {
+            if (PecaPosicao == null)
+                return "Null";
             return PecaPosicao.ToString();
         }
 

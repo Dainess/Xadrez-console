@@ -9,8 +9,8 @@ namespace Aplicacao
         {
             try
             {
-                //Test();
-                Game();
+                Test();
+                //Game();
             }
             catch (TabuleiroException e)
             {
@@ -32,13 +32,10 @@ namespace Aplicacao
 
         static void Test()
         {
-            Posicao um = new Posicao(2, 3);
-            Posicao dois = new Posicao(2, 2);
-            Posicao tres = new Posicao(2, 3);
-
-            Console.WriteLine($"Um e dois: {um} e {dois}: {um.Equals(dois)}");
-            Console.WriteLine($"Um e dois: {um} e {tres}: {um.Equals(tres)}");
-            Console.WriteLine($"Um e dois: {tres} e {dois}: {tres.Equals(dois)}");
+            Tabuleiro T = new Tabuleiro(8, 8);
+            Cavalo scadufax = new Cavalo(Cor.Branca, T);
+            T.ColocarPeca(scadufax, new Posicao(3, 3));
+            scadufax.MostraPosicoesPossiveis();
         }
 
         static void Test1()
@@ -62,5 +59,14 @@ namespace Aplicacao
 }
 
 /*
+    Posicao um = new Posicao(2, 3);
+    Posicao dois = new Posicao(2, 2);
+    Posicao tres = new Posicao(2, 3);
 
+    Console.WriteLine($"Um e dois: {um} e {dois}: {um.Equals(dois)}");
+    Console.WriteLine($"Um e dois: {um} e {tres}: {um.Equals(tres)}");
+    Console.WriteLine($"Um e dois: {tres} e {dois}: {tres.Equals(dois)}");
+
+    List<int> sumList = new List<int>() {1, 2, 3};
+    Console.WriteLine(sumList.Sum());
 */

@@ -130,19 +130,19 @@ class PartidaDeXadrez
             new {peca = (Peca)(new Torre(Cor.Branca, T)), coluna = 'C', linha = 1},
         };
 
-        ColocarNovaPeca(new Torre(Cor.Branca, T), 'C', 1);
+        ColocarNovaPeca(new Bispo(Cor.Branca, T), 'C', 1);
         ColocarNovaPeca(new Torre(Cor.Branca, T), 'C', 2);
         ColocarNovaPeca(new Rei(Cor.Branca, T), 'D', 1);
         ColocarNovaPeca(new Torre(Cor.Branca, T), 'D', 2);
-        ColocarNovaPeca(new Torre(Cor.Branca, T), 'E', 1);
+        ColocarNovaPeca(new Bispo(Cor.Branca, T), 'E', 1);
         ColocarNovaPeca(new Torre(Cor.Branca, T), 'E', 2);
 
         ColocarNovaPeca(new Torre(Cor.Preta, T), 'C', 7);
-        ColocarNovaPeca(new Torre(Cor.Preta, T), 'C', 8);
+        ColocarNovaPeca(new Bispo(Cor.Preta, T), 'C', 8);
         ColocarNovaPeca(new Torre(Cor.Preta, T), 'D', 7);
         ColocarNovaPeca(new Rei(Cor.Preta, T), 'D', 8);
         ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 7);
-        ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 8);
+        ColocarNovaPeca(new Bispo(Cor.Preta, T), 'E', 8);
 
         T.AtualizaMovimentosPossiveis();
     }

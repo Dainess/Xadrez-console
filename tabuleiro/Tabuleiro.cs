@@ -27,7 +27,8 @@ namespace AreaDeJogo
 
         public bool ExistePeca(Posicao pos)
         {
-            ValidarPosicao(pos);
+            if (ValidarPosicao(pos) == false)
+                throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
             return QualAPeca(pos) != null;
         }
 
@@ -45,22 +46,24 @@ namespace AreaDeJogo
         public Peca RetirarPeca(Posicao posicao)
         {
             if (QualAPeca(posicao) == null)
-                return null;
+                return null!;
             else
             {   
                 Peca aux = QualAPeca(posicao);
-                aux.SetPosicao(null);
-                Espacos[posicao.Linha, posicao.Coluna] = null;
+                aux.SetPosicao(null!);
+                Espacos[posicao.Linha, posicao.Coluna] = null!;
                 return aux;
             }       
         }
         
-        public void ValidarPosicao(Posicao pos)
+        public bool ValidarPosicao(Posicao pos)
         {
             if (pos.Linha < 0 || pos.Linha >= this.Linhas  || pos.Coluna < 0 || pos.Coluna >= this.Colunas)
             {
-                throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
+                //throw new TabuleiroException($"Posição {pos} no tabuleiro não existe!");
+                return false;
             }
+            return true;
         }
 
         public void AtualizaMovimentosPossiveis()
