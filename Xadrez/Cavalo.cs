@@ -20,15 +20,18 @@ namespace Xadrez
 
             foreach (var thing in PosicoesPossiveis())
             {
-                if (T.ExistePeca(thing))
+                if (T.ValidarPosicao(thing))
                 {
-                    if (T.QualAPeca(thing).PecaCor != PecaCor)
+                    if (T.ExistePeca(thing))
                     {
-                        retorno[thing.Linha, thing.Coluna] = true;
+                        if (T.QualAPeca(thing).PecaCor != PecaCor)
+                        {
+                            retorno[thing.Linha, thing.Coluna] = true;
+                        }
+                        continue;
                     }
-                    continue;
+                    retorno[thing.Linha, thing.Coluna] = true;
                 }
-                retorno[thing.Linha, thing.Coluna] = true;
             }
 
             return retorno;

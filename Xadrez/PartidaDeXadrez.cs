@@ -44,14 +44,19 @@ class PartidaDeXadrez
         return (Cor)(1 - (int)cor);
     }
 
-    private Peca Rei(Cor cor)
+    private Rei Rei(Cor cor)
     {
-        return T.PecasEmJogo(cor).First(peca => peca is Rei);
+        Rei? reizinho = T.PecasEmJogo(cor).First(peca => peca is Rei) as Rei;
+        if (reizinho == null)
+        {
+            throw new TabuleiroException("Por algum motivo não há um Rei entre as peças em jogo");
+        }
+        return reizinho;
     }
 
     private bool EmXeque(Cor cor)
     {
-        Rei nossoRei = (Rei)Rei(cor);
+        Rei nossoRei = Rei(cor);
         if (nossoRei == null)
             throw new TabuleiroException($"Não há um rei da cor {JogadorAtual} no tabuleiro");
         else if (nossoRei.PecaPosicao == null)
@@ -64,6 +69,24 @@ class PartidaDeXadrez
             }
         }
         return false;
+    }
+
+    private bool SimulaXeque(Posicao pos, Cor cor)
+    {
+        Rei nossoRei = Rei(cor);
+        if (nossoRei.PecaPosicao == null)
+            throw new TabuleiroException($"Por algum acaso o rei não tem uma posição no tabuleiro");
+        Peca pecaDeslocada = ExecutaMovimento(nossoRei.PecaPosicao, pos);
+        if (EmXeque(cor))
+        {
+            DesfazMovimento(nossoRei.PecaPosicao, pos, pecaDeslocada);
+            return true;
+        }
+        else
+        {
+            DesfazMovimento(nossoRei.PecaPosicao, pos, pecaDeslocada);
+            return false;
+        }
     }
 
     private bool SalvaOXeque(Cor cor)
@@ -83,11 +106,12 @@ class PartidaDeXadrez
             {
                 Posicao original = peca.PecaPosicao;
                 Peca pecaSimulada = ExecutaMovimento(original, posicao);
-                if (TestaJogada(original, posicao, pecaSimulada))
+                if (SimulaJogadaVerificandoXeque(original, posicao, pecaSimulada) == false)
                 {
                     DesfazMovimento(original, posicao, pecaSimulada);
                     return true;
                 }
+                DesfazMovimento(original, posicao, pecaSimulada); // correção aleatória enquanto olhava outra coisa
             }
         }
         return false;
@@ -108,14 +132,56 @@ class PartidaDeXadrez
         Turno++;
     }
 
-    public bool TestaJogada(Posicao origem, Posicao destino, Peca pecaCapturada)
+    public bool SimulaJogadaVerificandoXeque(Posicao origem, Posicao destino, Peca pecaCapturada)
     {
         if (EmXeque(JogadorAtual))
         {
             DesfazMovimento(origem, destino, pecaCapturada);
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public bool Roque(Peca peca, Posicao destino)
+    {
+        // isso aqui é igual a: Rei reizinho = peca as Rei; if (reizinho != null) 
+        if (peca is Rei reizinho)
+        {
+            if (reizinho.PecaPosicao == null)
+                throw new TabuleiroException("De alguma forma o rei está sem posição durante a execução do Roque Pequeno");
+            if (destino == new Posicao(reizinho.PecaPosicao.Linha, reizinho.PecaPosicao.Coluna + 2))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool EnPassant(Peca peca, Posicao destino)
+    {
+        if (peca is Peao peao)
+        {
+            if (peao.PecaPosicao == null)
+                throw new TabuleiroException("De alguma forma o peao está sem posição durante a execução do En Passant");
+
+            Posicao esquerda = new(peao.PecaPosicao.Linha - 1 + ((int)peao.PecaCor * 2), peao.PecaPosicao.Coluna - 1);
+            Posicao direita = new(peao.PecaPosicao.Linha - 1 + ((int)peao.PecaCor * 2), peao.PecaPosicao.Coluna + 1);
+            
+            if ((destino == esquerda || destino == direita) 
+                && T.ExistePeca(destino) == false)
+                return true;
+        }
+        return false;
+    }
+
+    public bool PodeRoque(Posicao origem, Posicao destino)
+    {
+        Posicao caminho = new Posicao(origem.Linha, origem.Coluna + 1);
+        if (SimulaXeque(origem, JogadorAtual) == false && SimulaXeque(destino, JogadorAtual) == false && SimulaXeque(caminho, JogadorAtual) == false)
+        {
+            return true;
+        }
+        return false;
     }
 
     public void ColocarNovaPeca(Peca peca, char coluna, int linha)
@@ -124,26 +190,79 @@ class PartidaDeXadrez
         T.PecasAtivas.Add(peca);
     }
 
+    public void IniciarTabuleiro(bool test)
+    {
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'A', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'B', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'C', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'D', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'E', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'F', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'G', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'H', 2);
+
+        ColocarNovaPeca(new Torre(Cor.Branca,T), 'A', 1);
+        ColocarNovaPeca(new Rei(Cor.Branca,T), 'E', 1);
+        ColocarNovaPeca(new Torre(Cor.Branca,T), 'H', 1);
+
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'A', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'B', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'C', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'D', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'E', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'F', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'G', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'H', 7);
+
+        ColocarNovaPeca(new Torre(Cor.Preta,T), 'A', 8);
+        ColocarNovaPeca(new Rei(Cor.Preta,T), 'E', 8);
+        ColocarNovaPeca(new Torre(Cor.Preta,T), 'H', 8);
+
+        T.AtualizaMovimentosPossiveis();
+    }
+
     public void IniciarTabuleiro()
     {
         var bots = new[] {
             new {peca = (Peca)(new Torre(Cor.Branca, T)), coluna = 'C', linha = 1},
         };
 
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'A', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'B', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'C', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'D', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'E', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'F', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'G', 2);
+        ColocarNovaPeca(new Peao(Cor.Branca, T), 'H', 2);
+
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'A', 1);
+        ColocarNovaPeca(new Cavalo(Cor.Branca, T), 'B', 1);
         ColocarNovaPeca(new Bispo(Cor.Branca, T), 'C', 1);
-        ColocarNovaPeca(new Torre(Cor.Branca, T), 'C', 2);
-        ColocarNovaPeca(new Rei(Cor.Branca, T), 'D', 1);
-        ColocarNovaPeca(new Torre(Cor.Branca, T), 'D', 2);
-        ColocarNovaPeca(new Bispo(Cor.Branca, T), 'E', 1);
-        ColocarNovaPeca(new Torre(Cor.Branca, T), 'E', 2);
+        ColocarNovaPeca(new Rainha(Cor.Branca, T), 'D', 1);
+        ColocarNovaPeca(new Rei(Cor.Branca, T), 'E', 1);
+        ColocarNovaPeca(new Bispo(Cor.Branca, T), 'F', 1);
+        ColocarNovaPeca(new Cavalo(Cor.Branca, T), 'G', 1);
+        ColocarNovaPeca(new Torre(Cor.Branca, T), 'H', 1);
+        
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'A', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'B', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'C', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'D', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'E', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'F', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'G', 7);
+        ColocarNovaPeca(new Peao(Cor.Preta, T), 'H', 7);
 
-        ColocarNovaPeca(new Torre(Cor.Preta, T), 'C', 7);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'A', 8);
+        ColocarNovaPeca(new Cavalo(Cor.Preta, T), 'B', 8);
         ColocarNovaPeca(new Bispo(Cor.Preta, T), 'C', 8);
-        ColocarNovaPeca(new Torre(Cor.Preta, T), 'D', 7);
-        ColocarNovaPeca(new Rei(Cor.Preta, T), 'D', 8);
-        ColocarNovaPeca(new Torre(Cor.Preta, T), 'E', 7);
-        ColocarNovaPeca(new Bispo(Cor.Preta, T), 'E', 8);
-
+        ColocarNovaPeca(new Rainha(Cor.Preta, T), 'D', 8);
+        ColocarNovaPeca(new Rei(Cor.Preta, T), 'E', 8);
+        ColocarNovaPeca(new Bispo(Cor.Preta, T), 'F', 8);
+        ColocarNovaPeca(new Cavalo(Cor.Preta, T), 'G', 8);
+        ColocarNovaPeca(new Torre(Cor.Preta, T), 'H', 8);
+        
         T.AtualizaMovimentosPossiveis();
     }
 
@@ -218,15 +337,33 @@ class PartidaDeXadrez
                     else
                     {   
                         Peca pecaCapturada = ExecutaMovimento(origem, destino);
-                        if (TestaJogada(origem, destino, pecaCapturada) == false)
+                        if (SimulaJogadaVerificandoXeque(origem, destino, pecaCapturada))
                         {
                             Console.WriteLine("Este movimento te deixa em xeque. Escolha outro.\n");
+                        }
+                        if (Roque(proximaPeca, destino))
+                        {
+                            if (PodeRoque(origem, destino))
+                            {
+                                ExecutaMovimento(new Posicao(destino.Linha, destino.Coluna + 1), new Posicao(destino.Linha, destino.Coluna - 1));
+                                RealizaJogada(pecaCapturada);
+                                break;
+                            }                      
+                            else
+                            {
+                                Console.WriteLine("O rei fica em xeque durante o movimento do Roque");
+                                continue;
+                            }
+                        } 
+                        else if (EnPassant(proximaPeca, destino))
+                        {
+
                         }
                         else
                         {
                             RealizaJogada(pecaCapturada);
                             break;
-                        }    
+                        }                         
                     }
                 }
             }
@@ -239,10 +376,3 @@ class PartidaDeXadrez
         Console.WriteLine($"Vencedor: {Adversaria(JogadorAtual)}");
     }
 }
-
-/*             
-    foreach (var thing in posicoesLegais)
-    {
-        Console.WriteLine(thing.ToXadrez());
-    }
-*/

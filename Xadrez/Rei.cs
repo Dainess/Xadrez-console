@@ -40,11 +40,11 @@ namespace Xadrez
             return retorno;
         }
 
-        private Posicao[] PosicoesPossiveis()
+        private List<Posicao> PosicoesPossiveis()
         {
             if (PecaPosicao == null)
                 throw new TabuleiroException("O Rei não pode criar matriz de movimentos pois sua posição é nula");;
-            return new Posicao[] {
+            List<Posicao> doRei = new List<Posicao> {
                 new Posicao(PecaPosicao.Linha, PecaPosicao.Coluna - 1), //oeste
                 new Posicao(PecaPosicao.Linha - 1, PecaPosicao.Coluna - 1), //noroeste
                 new Posicao(PecaPosicao.Linha - 1, PecaPosicao.Coluna), //norte
@@ -54,6 +54,37 @@ namespace Xadrez
                 new Posicao(PecaPosicao.Linha + 1, PecaPosicao.Coluna), //sul
                 new Posicao(PecaPosicao.Linha + 1, PecaPosicao.Coluna - 1), //sudoeste
             };
+            if (RoquePequeno())
+            {
+                doRei.Add(new Posicao(PecaPosicao.Linha, PecaPosicao.Coluna + 2));
+            }
+            return doRei;
+        }
+
+        private bool RoquePequeno()
+        {
+            if (PecaPosicao == null)
+                throw new TabuleiroException("De alguma forma o Rei não tem posição no tabuleiro");
+
+            Torre queSejaTorre;
+
+            try 
+            {
+                queSejaTorre = (Torre)T.QualAPeca(new Posicao (PecaPosicao.Linha, PecaPosicao.Coluna + 3));
+            }
+            catch
+            {
+                return false;
+            }
+                            
+            if (Movimentos == 0 &&
+            T.ExistePeca(new Posicao (PecaPosicao.Linha, PecaPosicao.Coluna + 1)) == false &&
+            T.ExistePeca(new Posicao (PecaPosicao.Linha, PecaPosicao.Coluna + 2)) == false &&
+            queSejaTorre.RoquePequeno())
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool PodeMover(Posicao posicao)

@@ -73,5 +73,12 @@ namespace Xadrez
             retorno[proxima.Linha, proxima.Coluna] = true;
             return false;
         }
+
+        internal bool RoquePequeno()
+        {
+            if (Movimentos == 0)
+                return true;
+            return false;
+        }
     }
 }

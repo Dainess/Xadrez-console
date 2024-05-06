@@ -9,12 +9,12 @@ namespace Aplicacao
         {
             try
             {
-                Test();
+                Test1();
                 //Game();
             }
             catch (TabuleiroException e)
             {
-                Console.WriteLine($"Tabuleiro Exception raised: " + e.Message);
+                Console.WriteLine($"Tabuleiro Exception raised: " + e.Message + e.StackTrace);
             }
             catch (Exception e)
             {
@@ -33,28 +33,20 @@ namespace Aplicacao
         static void Test()
         {
             Tabuleiro T = new Tabuleiro(8, 8);
-            Peao scadufax = new Peao(Cor.Branca, T);
+            Peao scadufax = new Peao(Cor.Preta, T);
             T.ColocarPeca(scadufax, new Posicao(3, 4));
+            T.ColocarPeca(new Torre(Cor.Preta, T), new Posicao(4, 3));
+            T.ColocarPeca(new Torre(Cor.Branca, T), new Posicao(4, 5));
             
             Tela.ImprimirTabuleiro(T, scadufax.MovimentosPossiveis());
         }
 
         static void Test1()
         {
-            Tabuleiro T = new Tabuleiro(8, 8);
-            Rei reizinho = new Rei(Cor.Branca, T);
-            Torre baradDur = new Torre(Cor.Preta, T);
-            Rei prince = new Rei(Cor.Branca, T);
-            Console.WriteLine();
-            T.ColocarPeca(reizinho, new Posicao(5,5));
-            T.ColocarPeca(baradDur, new Posicao(2,5));
-            T.ColocarPeca(prince, new Posicao(3,4));
-            T.ColocarPeca(new Rei(Cor.Branca, T), new Posicao(6,4));
-
-            //Tela.ImprimirComFutura(baradDur);
-            //Tela.ImprimirComFutura(prince);
-
-            Tela.ImprimirTabuleiro(T);
+            PartidaDeXadrez partida = new PartidaDeXadrez();
+            partida.IniciarTabuleiro(true);
+                            
+            partida.LoopDePartida();
         }
     }
 }
